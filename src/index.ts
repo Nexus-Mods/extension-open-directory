@@ -1,4 +1,3 @@
-import opn = require('opn');
 import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
 
@@ -6,7 +5,7 @@ function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open in File Manager', () => {
     const store = context.api.store;
-    opn(selectors.installPath(store.getState())).catch(err => undefined);
+    (util as any).opn(selectors.installPath(store.getState())).catch(err => undefined);
   });
 
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
@@ -15,8 +14,8 @@ function init(context: types.IExtensionContext) {
     const installPath = selectors.installPath(store.getState());
     const modPath = path.join(installPath, instanceIds[0]);
     fs.statAsync(modPath)
-      .then(() => opn(modPath).catch(err => undefined))
-      .catch(err => opn(installPath).catch(e => undefined))
+      .then(() => (util as any).opn(modPath).catch(err => undefined))
+      .catch(err => (util as any).opn(installPath).catch(e => undefined))
       .then(() => null);
   }, instanceIds => {
     const state: types.IState = context.api.store.getState();
@@ -27,7 +26,7 @@ function init(context: types.IExtensionContext) {
   context.registerAction('download-icons', 300, 'open-ext', {},
                          'Open in file manager', () => {
     const store = context.api.store;
-    opn(selectors.downloadPath(store.getState())).catch(err => undefined);
+    (util as any).opn(selectors.downloadPath(store.getState())).catch(err => undefined);
   });
 
   return true;
