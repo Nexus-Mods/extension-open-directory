@@ -4,25 +4,25 @@ import { fs, selectors, types, util } from 'vortex-api';
 
 function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
-                         'Open Vortex mods folder', () => {
+                         'Open Vortex Mods Folder', () => {
     const store = context.api.store;
     (util as any).opn(selectors.installPath(store.getState())).catch(err => undefined);
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
-                         'Open game folder', () => {
+                         'Open Game Folder', () => {
     const state = context.api.store.getState();
-    const gameRef: types.IGame = util.getGame(selectors.activeGameId(state));
-    getGameInstallPath(gameRef).then((installPath) => {
+    const gameId: string = selectors.activeGameId(state);
+    getGameInstallPath(state, gameId).then((installPath) => {
       openPath(installPath);
     }).catch(e => null);
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
-                         'Open game mods folder', () => {
+                         'Open Game Mods Folder', () => {
     const state = context.api.store.getState();
     const gameRef: types.IGame = util.getGame(selectors.activeGameId(state));
-    getGameInstallPath(gameRef).then((installPath) => {
+    getGameInstallPath(state, gameRef).then((installPath) => {
       const modPath = path.join(installPath, gameRef.queryModPath(installPath));
       openPath(modPath, installPath);
     }).catch(e => null);
@@ -41,7 +41,7 @@ function init(context: types.IExtensionContext) {
   });
 
   context.registerAction('download-icons', 300, 'open-ext', {},
-                         'Open in file manager', () => {
+                         'Open in File Manager', () => {
     const store = context.api.store;
     (util as any).opn(selectors.downloadPath(store.getState())).catch(err => undefined);
   });
@@ -49,20 +49,21 @@ function init(context: types.IExtensionContext) {
   return true;
 }
 
-function getGameInstallPath(game: types.IGame): Promise<string> {
+function getGameInstallPath(state: any, game: types.IGame | string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const installPath = game.queryPath();
-    if (typeof(installPath) === 'string') {
-      resolve(installPath);
+    let discoveredPath: string;
+    if (typeof(game) === 'string') {
+      discoveredPath = util.getSafe(state, ['settings', 'gameMode', 'discovered', game, 'path'], undefined);
     } else {
-      (installPath as Promise<string>).then(resolvedPath => resolve(resolvedPath));
+      discoveredPath = util.getSafe(state, ['settings', 'gameMode', 'discovered', game.id, 'path'], undefined);
     }
+    resolve(discoveredPath);
   })
 }
 
-function openPath(path, fallbackPath?) {
-  fs.statAsync(path)
-    .then(() => (util as any).opn(path).catch(e => undefined))
+function openPath(mainPath: string, fallbackPath?: string) {
+  fs.statAsync(mainPath)
+    .then(() => (util as any).opn(mainPath).catch(e => undefined))
     .catch(e => fallbackPath !== undefined 
       ? (util as any).opn(fallbackPath).catch(e => undefined)
       : undefined)
