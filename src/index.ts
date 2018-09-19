@@ -15,17 +15,17 @@ function init(context: types.IExtensionContext) {
     const gameId: string = selectors.activeGameId(state);
     getGameInstallPath(state, gameId).then((installPath) => {
       openPath(installPath);
-    }).catch(e => null);
+    }).catch(e => {throw Error(e)});
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Mods Folder', () => {
     const state = context.api.store.getState();
     const gameRef: types.IGame = util.getGame(selectors.activeGameId(state));
-    getGameInstallPath(state, gameRef).then((installPath) => {
+    getGameInstallPath(state, gameRef.id).then((installPath) => {
       const modPath = path.join(installPath, gameRef.queryModPath(installPath));
       openPath(modPath, installPath);
-    }).catch(e => null);
+    }).catch(e => {throw Error(e)});
   });
   
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
@@ -49,15 +49,10 @@ function init(context: types.IExtensionContext) {
   return true;
 }
 
-function getGameInstallPath(state: any, game: types.IGame | string): Promise<string> {
+function getGameInstallPath(state: any, gameId: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    let discoveredPath: string;
-    if (typeof(game) === 'string') {
-      discoveredPath = util.getSafe(state, ['settings', 'gameMode', 'discovered', game, 'path'], undefined);
-    } else {
-      discoveredPath = util.getSafe(state, ['settings', 'gameMode', 'discovered', game.id, 'path'], undefined);
-    }
-    resolve(discoveredPath);
+    const discoveredPath: string = util.getSafe(state, ['settings', 'gameMode', 'discovered', gameId, 'path'], undefined);
+    discoveredPath !== undefined ? resolve(discoveredPath) : reject(`Could not resolve game path for ${gameId}`);
   })
 }
 
