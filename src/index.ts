@@ -15,7 +15,7 @@ function init(context: types.IExtensionContext) {
     const gameId: string = selectors.activeGameId(state);
     getGameInstallPath(state, gameId).then((installPath) => {
       openPath(installPath);
-    }).catch(e => {throw Error(e)});
+    }).catch(e => context.api.showErrorNotification('Failed to open game folder', e));
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
@@ -25,7 +25,7 @@ function init(context: types.IExtensionContext) {
     getGameInstallPath(state, gameRef.id).then((installPath) => {
       const modPath = path.join(installPath, gameRef.queryModPath(installPath));
       openPath(modPath, installPath);
-    }).catch(e => {throw Error(e)});
+    }).catch(e => context.api.showErrorNotification('Failed to open the game mods folder', e));
   });
   
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
