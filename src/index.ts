@@ -23,7 +23,11 @@ function init(context: types.IExtensionContext) {
     const state = context.api.store.getState();
     const gameRef: types.IGame = util.getGame(selectors.activeGameId(state));
     getGameInstallPath(state, gameRef.id).then((installPath) => {
-      const modPath = path.join(installPath, gameRef.queryModPath(installPath));
+      let modPath = gameRef.queryModPath(installPath);
+      if (!path.isAbsolute(modPath)) {
+        modPath = path.join(installPath, modPath);
+      }
+      
       openPath(modPath, installPath);
     }).catch(e => { context.api.showErrorNotification('Failed to open the game mods folder', e); });
   });
