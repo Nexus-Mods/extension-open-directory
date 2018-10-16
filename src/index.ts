@@ -4,7 +4,7 @@ import { fs, selectors, types, util } from 'vortex-api';
 
 function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
-                         'Open Vortex Mods Folder', () => {
+                         'Open Mod Staging Folder', () => {
     const store = context.api.store;
     (util as any).opn(selectors.installPath(store.getState())).catch(err => undefined);
   });
