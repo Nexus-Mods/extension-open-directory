@@ -1,5 +1,5 @@
-import * as path from 'path';
 import * as Promise from 'bluebird';
+import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
 
 function init(context: types.IExtensionContext) {
@@ -27,11 +27,11 @@ function init(context: types.IExtensionContext) {
       if (!path.isAbsolute(modPath)) {
         modPath = path.join(installPath, modPath);
       }
-      
+
       openPath(modPath, installPath);
     }).catch(e => { context.api.showErrorNotification('Failed to open the game mods folder', e); });
   });
-  
+
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
                          'Open in File Manager', (instanceIds: string[]) => {
     const store = context.api.store;
@@ -55,16 +55,19 @@ function init(context: types.IExtensionContext) {
 
 function getGameInstallPath(state: any, gameId: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const discoveredPath: string = util.getSafe(state, ['settings', 'gameMode', 'discovered', gameId, 'path'], undefined);
-    discoveredPath !== undefined ? resolve(discoveredPath) : reject(`Could not resolve game path for ${gameId}`);
-  })
+    const discoveredPath: string =
+      util.getSafe(state, ['settings', 'gameMode', 'discovered', gameId, 'path'], undefined);
+    (discoveredPath !== undefined)
+      ? resolve(discoveredPath)
+      : reject(`Could not resolve game path for ${gameId}`);
+  });
 }
 
 function openPath(mainPath: string, fallbackPath?: string) {
   fs.statAsync(mainPath)
-    .then(() => (util as any).opn(mainPath).catch(e => undefined))
-    .catch(e => fallbackPath !== undefined 
-      ? (util as any).opn(fallbackPath).catch(e => undefined)
+    .then(() => (util as any).opn(mainPath).catch(() => undefined))
+    .catch(() => (fallbackPath !== undefined)
+      ? (util as any).opn(fallbackPath).catch(() => undefined)
       : undefined)
     .then(() => null);
 }
