@@ -25,7 +25,12 @@ function init(context: types.IExtensionContext) {
     getGameInstallPath(state, gameRef.id).then((installPath) => {
       let modPath = gameRef.queryModPath(installPath);
       if (!path.isAbsolute(modPath)) {
-        modPath = path.join(installPath, modPath);
+        // We add a path separator at the end to avoid running executables
+        //  instead of opening file explorer. This happens when the
+        //  a game's mods folder is named like its executable.
+        //  e.g. Vampire the Masquerade's default modding folder is ../Vampire/
+        //  and within the same directory ../Vampire.exe exists as well.
+        modPath = path.join(installPath, modPath, path.sep);
       }
 
       openPath(modPath, installPath);
