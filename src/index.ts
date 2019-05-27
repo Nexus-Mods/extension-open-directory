@@ -30,7 +30,7 @@ function init(context: types.IExtensionContext) {
         //  a game's mods folder is named like its executable.
         //  e.g. Vampire the Masquerade's default modding folder is ../Vampire/
         //  and within the same directory ../Vampire.exe exists as well.
-        modPath = path.join(installPath, modPath, path.sep);
+        modPath = path.join(installPath, modPath) + path.sep;
       }
 
       openPath(modPath, installPath);
