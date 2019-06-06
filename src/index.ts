@@ -62,9 +62,11 @@ function getGameInstallPath(state: any, gameId: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const discoveredPath: string =
       util.getSafe(state, ['settings', 'gameMode', 'discovered', gameId, 'path'], undefined);
-    (discoveredPath !== undefined)
-      ? resolve(discoveredPath)
-      : reject(`Could not resolve game path for ${gameId}`);
+    if (discoveredPath === undefined) {
+      reject(new Error(`Could not resolve game path for "${gameId}"`));
+    } else {
+      resolve(discoveredPath);
+    }
   });
 }
 
