@@ -23,7 +23,12 @@ function init(context: types.IExtensionContext) {
     const state = context.api.store.getState();
     const gameRef: types.IGame = util.getGame(selectors.activeGameId(state));
     getGameInstallPath(state, gameRef.id).then((installPath) => {
-      let modPath = gameRef.queryModPath(installPath);
+      // Check if the extension provided us with a "custom" directory
+      //  to open when the button is clicked - otherwise assume we
+      //  just need to use the default queryModPath value.
+      let modPath = ((!!gameRef.details) && (!!gameRef.details.customOpenModsPath))
+        ? gameRef.details.customOpenModsPath
+        : gameRef.queryModPath(installPath);
       if (!path.isAbsolute(modPath)) {
         // We add a path separator at the end to avoid running executables
         //  instead of opening file explorer. This happens when the
