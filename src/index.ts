@@ -1,3 +1,5 @@
+import { settingsPath, appDataPath } from './gameSupport';
+
 import Promise from 'bluebird';
 import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
@@ -40,6 +42,34 @@ function init(context: types.IExtensionContext) {
 
       openPath(modPath, installPath);
     }).catch(e => { context.api.showErrorNotification('Failed to open the game mods folder', e); });
+  });
+
+  context.registerAction('mod-icons', 300, 'open-ext', {},
+                         'Open Game Settings Folder', () => {
+    const state = context.api.getState();
+    const gameMode = selectors.activeGameId(state);
+    const target = settingsPath(gameMode);
+    if (target !== undefined) {
+      openPath(target);
+    }
+  }, () => {
+    const state = context.api.getState();
+    const gameMode = selectors.activeGameId(state);
+    return settingsPath(gameMode) !== undefined;
+  });
+
+  context.registerAction('mod-icons', 300, 'open-ext', {},
+                         'Open Game Application Data Folder', () => {
+    const state = context.api.getState();
+    const gameMode = selectors.activeGameId(state);
+    const target = appDataPath(gameMode);
+    if (target !== undefined) {
+      openPath(target);
+    }
+  }, () => {
+    const state = context.api.getState();
+    const gameMode = selectors.activeGameId(state);
+    return appDataPath(gameMode) !== undefined;
   });
 
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
