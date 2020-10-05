@@ -1,5 +1,6 @@
 import { app as appIn, remote } from 'electron';
 import * as path from 'path';
+import { IGame } from 'vortex-api/lib/types/api';
 
 const app = remote?.app || appIn;
 
@@ -54,10 +55,16 @@ const gameSupport: { [gameId: string]: IGameSupport } = {
   },
 };
 
-export function settingsPath(gameMode: string): string {
-  return gameSupport[gameMode]?.settingsPath?.();
+export function settingsPath(game: IGame): string {
+  const knownPath = gameSupport[game.id]?.settingsPath?.();
+  return knownPath != undefined
+    ? knownPath
+    : game.details?.settingsPath?.();
 }
 
-export function appDataPath(gameMode: string): string {
-  return gameSupport[gameMode]?.appDataPath?.();
+export function appDataPath(game: IGame): string {
+  const knownPath = gameSupport[game.id]?.appDataPath?.();
+  return knownPath != undefined
+    ? knownPath
+    : game.details?.appDataPath?.();
 }
