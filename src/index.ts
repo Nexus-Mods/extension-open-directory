@@ -1,15 +1,14 @@
-import { settingsPath, appDataPath } from './gameSupport';
+import { appDataPath, settingsPath } from './gameSupport';
 
 import Promise from 'bluebird';
 import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
-import { IGame } from 'vortex-api/lib/types/api';
 
 function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Mod Staging Folder', () => {
     const store = context.api.store;
-    (util as any).opn(selectors.installPath(store.getState())).catch(err => undefined);
+    util.opn(selectors.installPath(store.getState())).catch(err => undefined);
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
@@ -48,28 +47,32 @@ function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Settings Folder', () => {
     const state = context.api.getState();
-    const game = selectors.currentGame(state) as IGame;
+    const gameId = selectors.activeGameId(state);
+    const game = util.getGame(gameId);
     const target = settingsPath(game);
     if (target !== undefined) {
       openPath(target);
     }
   }, () => {
     const state = context.api.getState();
-    const game = selectors.currentGame(state) as IGame;
+    const gameId = selectors.activeGameId(state);
+    const game = util.getGame(gameId);
     return settingsPath(game) !== undefined;
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Application Data Folder', () => {
     const state = context.api.getState();
-    const game = selectors.currentGame(state) as IGame;
+    const gameId = selectors.activeGameId(state);
+    const game = util.getGame(gameId);
     const target = appDataPath(game);
     if (target !== undefined) {
       openPath(target);
     }
   }, () => {
     const state = context.api.getState();
-    const game = selectors.currentGame(state) as IGame;
+    const gameId = selectors.activeGameId(state);
+    const game = util.getGame(gameId);
     return appDataPath(game) !== undefined;
   });
 
@@ -88,7 +91,7 @@ function init(context: types.IExtensionContext) {
   context.registerAction('download-icons', 300, 'open-ext', {},
                          'Open in File Manager', () => {
     const store = context.api.store;
-    (util as any).opn(selectors.downloadPath(store.getState())).catch(err => undefined);
+    util.opn(selectors.downloadPath(store.getState())).catch(err => undefined);
   });
 
   return true;
@@ -108,9 +111,9 @@ function getGameInstallPath(state: any, gameId: string): Promise<string> {
 
 function openPath(mainPath: string, fallbackPath?: string) {
   fs.statAsync(mainPath)
-    .then(() => (util as any).opn(mainPath).catch(() => undefined))
+    .then(() => util.opn(mainPath).catch(() => undefined))
     .catch(() => (fallbackPath !== undefined)
-      ? (util as any).opn(fallbackPath).catch(() => undefined)
+      ? util.opn(fallbackPath).catch(() => undefined)
       : undefined)
     .then(() => null);
 }
