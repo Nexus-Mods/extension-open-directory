@@ -3,6 +3,7 @@ import { settingsPath, appDataPath } from './gameSupport';
 import Promise from 'bluebird';
 import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
+import { IGame } from 'vortex-api/lib/types/api';
 
 function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
@@ -47,29 +48,29 @@ function init(context: types.IExtensionContext) {
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Settings Folder', () => {
     const state = context.api.getState();
-    const gameMode = selectors.activeGameId(state);
-    const target = settingsPath(gameMode);
+    const game = selectors.currentGame(state) as IGame;
+    const target = settingsPath(game);
     if (target !== undefined) {
       openPath(target);
     }
   }, () => {
     const state = context.api.getState();
-    const gameMode = selectors.activeGameId(state);
-    return settingsPath(gameMode) !== undefined;
+    const game = selectors.currentGame(state) as IGame;
+    return settingsPath(game) !== undefined;
   });
 
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Application Data Folder', () => {
     const state = context.api.getState();
-    const gameMode = selectors.activeGameId(state);
-    const target = appDataPath(gameMode);
+    const game = selectors.currentGame(state) as IGame;
+    const target = appDataPath(game);
     if (target !== undefined) {
       openPath(target);
     }
   }, () => {
     const state = context.api.getState();
-    const gameMode = selectors.activeGameId(state);
-    return appDataPath(gameMode) !== undefined;
+    const game = selectors.currentGame(state) as IGame;
+    return appDataPath(game) !== undefined;
   });
 
   context.registerAction('mods-action-icons', 100, 'open-ext', {},
