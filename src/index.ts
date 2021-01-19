@@ -20,6 +20,13 @@ function init(context: types.IExtensionContext) {
     }).catch(e => { context.api.showErrorNotification('Failed to open game folder', e); });
   });
 
+  context.registerAction('download-actions', 100, 'open-ext', {},
+                         'Open Download Folder', () => {
+    const state = context.api.getState();
+    const dlPath = selectors.downloadPath(state);
+    util.opn(dlPath).catch(() => undefined);
+  });
+
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Game Mods Folder', () => {
     const state = context.api.store.getState();
