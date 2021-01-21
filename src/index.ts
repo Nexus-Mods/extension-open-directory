@@ -21,7 +21,7 @@ function init(context: types.IExtensionContext) {
   });
 
   context.registerAction('download-actions', 100, 'open-ext', {},
-                         'Open Download Folder', () => {
+                         'Open Folder', () => {
     const state = context.api.getState();
     const dlPath = selectors.downloadPath(state);
     util.opn(dlPath).catch(() => undefined);
