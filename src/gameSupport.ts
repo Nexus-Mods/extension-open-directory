@@ -74,6 +74,12 @@ const gameSupport: { [gameId: string]: IGameSupport } = {
   },
 };
 
+function isXboxPath(discoveryPath: string) {
+  const hasPathElement = (element) =>
+    discoveryPath.toLowerCase().includes(element);
+  return ['modifiablewindowsapps', '3275kfvn8vcwc'].find(hasPathElement) !== undefined;
+}
+
 export function initGameSupport(store: Redux.Store<types.IState>) {
   const state: types.IState = store.getState();
 
@@ -81,7 +87,7 @@ export function initGameSupport(store: Redux.Store<types.IState>) {
 
   Object.keys(gameSupportXboxPass).forEach(gameMode => {
     if (discovered[gameMode]?.path !== undefined) {
-      if (discovered[gameMode].path.toLowerCase().includes('3275kfvn8vcwc')) {
+      if (isXboxPath(discovered[gameMode].path)) {
         gameSupport[gameMode] = gameSupportXboxPass[gameMode];
       }
     }
