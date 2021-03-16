@@ -1,5 +1,6 @@
 import { app as appIn, remote } from 'electron';
 import * as path from 'path';
+import * as Redux from 'redux';
 import { types } from 'vortex-api';
 
 const app = remote?.app || appIn;
@@ -19,6 +20,24 @@ const localAppData: () => string = (() => {
     return cached;
   };
 })();
+
+const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
+  skyrimse: {
+    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
+    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.SkyrimSE-PC_3275kfvn8vcwc',
+      'LocalCache', 'Local', 'Skyrim Special Edition MS'),
+  },
+  fallout4: {
+    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Fallout4 MS'),
+    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.Fallout4-PC_3275kfvn8vcwc',
+      'LocalCache', 'Local', 'Fallout4 MS'),
+  },
+  oblivion: {
+    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Oblivion'),
+    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.TESOblivion-PC_3275kfvn8vcwc',
+      'LocalCache', 'Local', 'Oblivion'),
+  },
+}
 
 const gameSupport: { [gameId: string]: IGameSupport } = {
   fallout3: {
@@ -54,6 +73,20 @@ const gameSupport: { [gameId: string]: IGameSupport } = {
     appDataPath: () => path.join(localAppData(), 'SkyrimVR'),
   },
 };
+
+export function initGameSupport(store: Redux.Store<types.IState>) {
+  const state: types.IState = store.getState();
+
+  const {discovered} = state.settings.gameMode;
+
+  Object.keys(gameSupportXboxPass).forEach(gameMode => {
+    if (discovered[gameMode]?.path !== undefined) {
+      if (discovered[gameMode].path.toLowerCase().includes('3275kfvn8vcwc')) {
+        gameSupport[gameMode] = gameSupportXboxPass[gameMode];
+      }
+    }
+  })
+}
 
 export function settingsPath(game: types.IGame): string {
   const knownPath = gameSupport[game.id]?.settingsPath?.();

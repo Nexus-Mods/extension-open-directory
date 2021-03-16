@@ -1,4 +1,4 @@
-import { appDataPath, settingsPath } from './gameSupport';
+import { appDataPath, initGameSupport, settingsPath } from './gameSupport';
 
 import Promise from 'bluebird';
 import * as path from 'path';
@@ -100,6 +100,13 @@ function init(context: types.IExtensionContext) {
     const store = context.api.store;
     util.opn(selectors.downloadPath(store.getState())).catch(err => undefined);
   });
+
+  context.once(() => {
+    context.api.onStateChange(
+      ['settings', 'gameMode', 'discovered'], (previous, current) => {
+        initGameSupport(context.api.store);
+      });
+  })
 
   return true;
 }
