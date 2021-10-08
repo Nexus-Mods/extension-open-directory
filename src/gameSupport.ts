@@ -1,9 +1,6 @@
-import { app as appIn, remote } from 'electron';
 import * as path from 'path';
 import * as Redux from 'redux';
-import { types } from 'vortex-api';
-
-const app = remote?.app || appIn;
+import { types, util } from 'vortex-api';
 
 interface IGameSupport {
   settingsPath?: () => string;
@@ -15,7 +12,7 @@ const localAppData: () => string = (() => {
   return () => {
     if (cached === undefined) {
       cached = process.env.LOCALAPPDATA
-        || path.resolve(app.getPath('appData'), '..', 'Local');
+        || path.resolve(util.getVortexPath('appData'), '..', 'Local');
     }
     return cached;
   };
@@ -23,17 +20,17 @@ const localAppData: () => string = (() => {
 
 const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
   skyrimse: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
     appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.SkyrimSE-PC_3275kfvn8vcwc',
       'LocalCache', 'Local', 'Skyrim Special Edition MS'),
   },
   fallout4: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Fallout4 MS'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS'),
     appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.Fallout4-PC_3275kfvn8vcwc',
       'LocalCache', 'Local', 'Fallout4 MS'),
   },
   oblivion: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Oblivion'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Oblivion'),
     appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.TESOblivion-PC_3275kfvn8vcwc',
       'LocalCache', 'Local', 'Oblivion'),
   },
@@ -41,35 +38,35 @@ const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
 
 const gameSupport: { [gameId: string]: IGameSupport } = {
   fallout3: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Fallout3'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout3'),
     appDataPath: () => path.join(localAppData(), 'Fallout3'),
   },
   falloutnv: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'FalloutNV'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'FalloutNV'),
     appDataPath: () => path.join(localAppData(), 'FalloutNV'),
   },
   fallout4: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Fallout4'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4'),
     appDataPath: () => path.join(localAppData(), 'Fallout4'),
   },
   fallout4vr: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Fallout4VR'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4VR'),
     appDataPath: () => path.join(localAppData(), 'Fallout4VR'),
   },
   oblivion: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Oblivion'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Oblivion'),
     appDataPath: () => path.join(localAppData(), 'Oblivion'),
   },
   skyrim: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Skyrim'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim'),
     appDataPath: () => path.join(localAppData(), 'Skyrim'),
   },
   skyrimse: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'Skyrim Special Edition'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition'),
     appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition'),
   },
   skyrimvr: {
-    settingsPath: () => path.join(app.getPath('documents'), 'My Games', 'SkyrimVR'),
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'SkyrimVR'),
     appDataPath: () => path.join(localAppData(), 'SkyrimVR'),
   },
 };

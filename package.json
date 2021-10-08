@@ -20,6 +20,7 @@
     "redux-thunk": "^2.2.0",
     "ts-loader": "^4.4.2",
     "vortex-api": "Nexus-Mods/vortex-api",
-    "webpack": "^4.17.1"
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.3.10"
   }
 }
