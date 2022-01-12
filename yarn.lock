@@ -1610,8 +1610,8 @@ util-deprecate@~1.0.1:
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
 vortex-api@Nexus-Mods/vortex-api:
-  version "1.2.11-r5"
-  resolved "https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/1c90049dd3967511b495940c04d7f9d9ff3ddfd2"
+  version "1.5.0"
+  resolved "https://codeload.github.com/Nexus-Mods/vortex-api/tar.gz/2e1083057488f2da01650ec29c40e3264cd96f6e"
 
 watchpack@^2.3.1:
   version "2.3.1"
