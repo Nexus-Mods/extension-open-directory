@@ -21,18 +21,11 @@ const localAppData: () => string = (() => {
 const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
   skyrimse: {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
-    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.SkyrimSE-PC_3275kfvn8vcwc',
-      'LocalCache', 'Local', 'Skyrim Special Edition MS'),
+    appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition MS'),
   },
   fallout4: {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS'),
-    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.Fallout4-PC_3275kfvn8vcwc',
-      'LocalCache', 'Local', 'Fallout4 MS'),
-  },
-  oblivion: {
-    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Oblivion'),
-    appDataPath: () => path.join(localAppData(), 'Packages', 'BethesdaSoftworks.TESOblivion-PC_3275kfvn8vcwc',
-      'LocalCache', 'Local', 'Oblivion'),
+    appDataPath: () => path.join(localAppData(), 'Fallout4 MS'),
   },
 }
 
