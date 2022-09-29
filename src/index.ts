@@ -102,6 +102,7 @@ function init(context: types.IExtensionContext) {
   });
 
   context.once(() => {
+    initGameSupport(context.api.store);
     context.api.onStateChange(
       ['settings', 'gameMode', 'discovered'], (previous, current) => {
         initGameSupport(context.api.store);

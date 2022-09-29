@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Redux from 'redux';
-import { types, util } from 'vortex-api';
+import { selectors, types, util } from 'vortex-api';
 
 interface IGameSupport {
   settingsPath?: () => string;
@@ -26,6 +26,13 @@ const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
   fallout4: {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS'),
     appDataPath: () => path.join(localAppData(), 'Fallout4 MS'),
+  },
+}
+
+const gameSupportGOG: { [gameId: string]: IGameSupport } = {
+  skyrimse: {
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition GOG'),
+    appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition GOG'),
   },
 }
 
@@ -70,8 +77,12 @@ function isXboxPath(discoveryPath: string) {
   return ['modifiablewindowsapps', '3275kfvn8vcwc'].find(hasPathElement) !== undefined;
 }
 
+let gameStoreForGame: (gameId: string) => string = () => undefined;
+
 export function initGameSupport(store: Redux.Store<types.IState>) {
   const state: types.IState = store.getState();
+
+  gameStoreForGame = (gameId: string) => selectors.discoveryByGame(store.getState(), gameId)['store'];
 
   const {discovered} = state.settings.gameMode;
 
@@ -85,14 +96,18 @@ export function initGameSupport(store: Redux.Store<types.IState>) {
 }
 
 export function settingsPath(game: types.IGame): string {
-  const knownPath = gameSupport[game.id]?.settingsPath?.();
+  const knownPath = (gameStoreForGame(game.id) === 'gog')
+    ? gameSupportGOG[game.id]?.settingsPath?.()
+    : gameSupport[game.id]?.settingsPath?.();
   return (knownPath !== undefined)
     ? knownPath
     : game.details?.settingsPath?.();
 }
 
 export function appDataPath(game: types.IGame): string {
-  const knownPath = gameSupport[game.id]?.appDataPath?.();
+  const knownPath = (gameStoreForGame(game.id) === 'gog')
+    ? gameSupportGOG[game.id]?.appDataPath?.()
+    : gameSupport[game.id]?.appDataPath?.();
   return (knownPath !== undefined)
     ? knownPath
     : game.details?.appDataPath?.();
