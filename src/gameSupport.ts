@@ -96,7 +96,7 @@ export function initGameSupport(store: Redux.Store<types.IState>) {
 }
 
 export function settingsPath(game: types.IGame): string {
-  const knownPath = (gameStoreForGame(game.id) === 'gog')
+  const knownPath = (gameStoreForGame(game.id) === 'gog') && !!gameSupportGOG[game.id]
     ? gameSupportGOG[game.id]?.settingsPath?.()
     : gameSupport[game.id]?.settingsPath?.();
   return (knownPath !== undefined)
@@ -105,7 +105,7 @@ export function settingsPath(game: types.IGame): string {
 }
 
 export function appDataPath(game: types.IGame): string {
-  const knownPath = (gameStoreForGame(game.id) === 'gog')
+  const knownPath = (gameStoreForGame(game.id) === 'gog') && !!gameSupportGOG[game.id]
     ? gameSupportGOG[game.id]?.appDataPath?.()
     : gameSupport[game.id]?.appDataPath?.();
   return (knownPath !== undefined)
