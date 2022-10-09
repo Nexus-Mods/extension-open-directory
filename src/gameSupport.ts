@@ -109,11 +109,11 @@ export function settingsPath(game: types.IGame): string {
   const defaultPath = gameSupport[game.id]?.settingsPath?.() || game.details?.settingsPath?.();
   
   switch(gameStore) {
-    case 'gog': knownPath = gameSupportGOG[game.id]?.settingsPath?.() || defaulPath;
+    case 'gog': knownPath = gameSupportGOG[game.id]?.settingsPath?.() || defaultPath;
     break;
-    case 'epic': knownPath = gameSupportEpic[gameMode]?.settingsPath?.() || defaulPath;
+    case 'epic': knownPath = gameSupportEpic[gameMode]?.settingsPath?.() || defaultPath;
     break;
-    case 'xbox': knownPath = gameSupportXboxPass[gameMode]?.settingsPath?.() || defaulPath;
+    case 'xbox': knownPath = gameSupportXboxPass[gameMode]?.settingsPath?.() || defaultPath;
     break;
     default: knownPath = defaultPath;
   }
@@ -128,11 +128,11 @@ export function appDataPath(game: types.IGame): string {
   const defaultPath = gameSupport[game.id]?.appDataPath?.() || game.details?.appDataPath?.();
   
   switch(gameStore) {
-    case 'gog': knownPath = gameSupportGOG[game.id]?.appDataPath?.() || defaulPath;
+    case 'gog': knownPath = gameSupportGOG[game.id]?.appDataPath?.() || defaultPath;
     break;
-    case 'epic': knownPath = gameSupportEpic[gameMode]?.appDataPath?.() || defaulPath;
+    case 'epic': knownPath = gameSupportEpic[gameMode]?.appDataPath?.() || defaultPath;
     break;
-    case 'xbox': knownPath = gameSupportXboxPass[gameMode]?.appDataPath?.() || defaulPath;
+    case 'xbox': knownPath = gameSupportXboxPass[gameMode]?.appDataPath?.() || defaultPath;
     break;
     default: knownPath = defaultPath;
   }
