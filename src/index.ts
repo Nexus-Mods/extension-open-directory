@@ -5,6 +5,7 @@ import * as path from 'path';
 import { fs, selectors, types, util } from 'vortex-api';
 
 function init(context: types.IExtensionContext) {
+  initGameSupport(context.api);
   context.registerAction('mod-icons', 300, 'open-ext', {},
                          'Open Mod Staging Folder', () => {
     const store = context.api.store;
@@ -100,14 +101,6 @@ function init(context: types.IExtensionContext) {
     const store = context.api.store;
     util.opn(selectors.downloadPath(store.getState())).catch(err => undefined);
   });
-
-  context.once(() => {
-    initGameSupport(context.api.store);
-    context.api.onStateChange(
-      ['settings', 'gameMode', 'discovered'], (previous, current) => {
-        initGameSupport(context.api.store);
-      });
-  })
 
   return true;
 }

@@ -72,8 +72,9 @@ const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
 
 let gameStoreForGame: (gameId: string) => string = () => undefined;
 
-export function initGameSupport(store: Redux.Store<types.IState>) {
-  gameStoreForGame = (gameId: string) => selectors.discoveryByGame(store.getState(), gameId)['store'];
+export function initGameSupport(api: types.IExtensionApi) {
+  gameStoreForGame = (gameId: string) =>
+    selectors.discoveryByGame(api.store.getState(), gameId).store;
 }
 
 export function settingsPath(game: types.IGame): string {
