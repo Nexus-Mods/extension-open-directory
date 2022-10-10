@@ -18,25 +18,7 @@ const localAppData: () => string = (() => {
   };
 })();
 
-const gameSupportXboxPass: { [gameId: string]: IGameSupport } = {
-  skyrimse: {
-    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
-    appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition MS'),
-  },
-  fallout4: {
-    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS'),
-    appDataPath: () => path.join(localAppData(), 'Fallout4 MS'),
-  },
-}
-
-const gameSupportGOG: { [gameId: string]: IGameSupport } = {
-  skyrimse: {
-    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition GOG'),
-    appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition GOG'),
-  },
-}
-
-const gameSupport: { [gameId: string]: IGameSupport } = {
+const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
   fallout3: {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout3'),
     appDataPath: () => path.join(localAppData(), 'Fallout3'),
@@ -69,46 +51,37 @@ const gameSupport: { [gameId: string]: IGameSupport } = {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'SkyrimVR'),
     appDataPath: () => path.join(localAppData(), 'SkyrimVR'),
   },
-};
-
-function isXboxPath(discoveryPath: string) {
-  const hasPathElement = (element) =>
-    discoveryPath.toLowerCase().includes(element);
-  return ['modifiablewindowsapps', '3275kfvn8vcwc'].find(hasPathElement) !== undefined;
-}
+}, {
+  xbox: {
+    skyrimse: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition MS'),
+      appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition MS'),
+    },
+    fallout4: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS'),
+      appDataPath: () => path.join(localAppData(), 'Fallout4 MS'),
+    },
+  },
+  gog: {
+    skyrimse: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition GOG'),
+      appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition GOG'),
+    },
+  },
+}, gameId => gameStoreForGame(gameId));
 
 let gameStoreForGame: (gameId: string) => string = () => undefined;
 
 export function initGameSupport(store: Redux.Store<types.IState>) {
-  const state: types.IState = store.getState();
-
   gameStoreForGame = (gameId: string) => selectors.discoveryByGame(store.getState(), gameId)['store'];
-
-  const {discovered} = state.settings.gameMode;
-
-  Object.keys(gameSupportXboxPass).forEach(gameMode => {
-    if (discovered[gameMode]?.path !== undefined) {
-      if (isXboxPath(discovered[gameMode].path)) {
-        gameSupport[gameMode] = gameSupportXboxPass[gameMode];
-      }
-    }
-  })
 }
 
 export function settingsPath(game: types.IGame): string {
-  const knownPath = (gameStoreForGame(game.id) === 'gog') && !!gameSupportGOG[game.id]
-    ? gameSupportGOG[game.id]?.settingsPath?.()
-    : gameSupport[game.id]?.settingsPath?.();
-  return (knownPath !== undefined)
-    ? knownPath
-    : game.details?.settingsPath?.();
+  return gameSupport.get(game.id, 'settingsPath')?.()
+      ?? game.details?.settingsPath?.();
 }
 
 export function appDataPath(game: types.IGame): string {
-  const knownPath = (gameStoreForGame(game.id) === 'gog') && !!gameSupportGOG[game.id]
-    ? gameSupportGOG[game.id]?.appDataPath?.()
-    : gameSupport[game.id]?.appDataPath?.();
-  return (knownPath !== undefined)
-    ? knownPath
-    : game.details?.appDataPath?.();
+  return gameSupport.get(game.id, 'appDataPath')?.()
+      ?? game.details?.appDataPath?.();
 }
