@@ -68,6 +68,12 @@ const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
       appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition GOG'),
     },
   },
+  epic: {
+    skyrimse: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition EPIC'),
+      appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition EPIC'),
+    },
+  },
 }, gameId => gameStoreForGame(gameId));
 
 let gameStoreForGame: (gameId: string) => string = () => undefined;
