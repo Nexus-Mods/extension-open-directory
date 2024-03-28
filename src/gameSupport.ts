@@ -67,6 +67,10 @@ const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
       settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition GOG'),
       appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition GOG'),
     },
+    enderalspecialedition: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Enderal Special Edition GOG'),
+      appDataPath: () => path.join(localAppData(), 'Enderal Special Edition GOG'),
+    },
   },
   epic: {
     skyrimse: {
