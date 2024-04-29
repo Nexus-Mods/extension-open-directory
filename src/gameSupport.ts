@@ -77,6 +77,10 @@ const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
       settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition EPIC'),
       appDataPath: () => path.join(localAppData(), 'Skyrim Special Edition EPIC'),
     },
+    fallout4: {
+      settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 EPIC'),
+      appDataPath: () => path.join(localAppData(), 'Fallout4 EPIC'),
+    },
   },
 }, gameId => gameStoreForGame(gameId));
 
