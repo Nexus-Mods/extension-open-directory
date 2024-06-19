@@ -35,6 +35,10 @@ const gameSupport = util.makeOverlayableDictionary<string, IGameSupport>({
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4VR'),
     appDataPath: () => path.join(localAppData(), 'Fallout4VR'),
   },
+  starfield: {
+    settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Starfield'),
+    appDataPath: () => path.join(localAppData(), 'Starfield'),
+  },
   oblivion: {
     settingsPath: () => path.join(util.getVortexPath('documents'), 'My Games', 'Oblivion'),
     appDataPath: () => path.join(localAppData(), 'Oblivion'),
