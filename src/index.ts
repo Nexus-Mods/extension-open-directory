@@ -96,6 +96,27 @@ function init(context: types.IExtensionContext) {
     return util.getSafe(state.persistent.mods, [gameMode, instanceIds[0]], undefined) !== undefined;
   });
 
+  context.registerAction('mods-action-icons', 100, 'open-ext', {},
+                         'Open Archive', (instanceIds: string[]) => {
+    const state = context.api.getState();
+    const downloadPath = selectors.downloadPath(state);
+    const mod = util.getSafe(state.persistent.mods, [selectors.activeGameId(state), instanceIds[0]], undefined);
+    const downloadId = mod?.archiveId ?? instanceIds[0];
+    const download: types.IDownload = util.getSafe(state.persistent.downloads.files, [downloadId], undefined);
+    if (!download) {
+      context.api.showErrorNotification('Failed to open mod archive', 'The mod archive could not be found.', { allowReport: false });
+      return;
+    }
+    const modArchivePath = path.join(downloadPath, download.localPath);
+    openPath(modArchivePath, downloadPath);
+  }, instanceIds => {
+    const state: types.IState = context.api.store.getState();
+    const gameMode = selectors.activeGameId(state);
+    const mod = util.getSafe(state.persistent.mods, [gameMode, instanceIds[0]], undefined);
+    const downloadId = mod?.archiveId ?? instanceIds[0];
+    return util.getSafe(state.persistent.downloads.files, [downloadId], undefined) !== undefined;
+  });
+
   context.registerAction('download-icons', 300, 'open-ext', {},
                          'Open in File Manager', () => {
     const store = context.api.store;
