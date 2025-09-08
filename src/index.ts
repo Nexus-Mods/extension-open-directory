@@ -103,7 +103,7 @@ function init(context: types.IExtensionContext) {
     const mod = util.getSafe(state.persistent.mods, [selectors.activeGameId(state), instanceIds[0]], undefined);
     const downloadId = mod?.archiveId ?? instanceIds[0];
     const download: types.IDownload = util.getSafe(state.persistent.downloads.files, [downloadId], undefined);
-    if (!download) {
+    if (!download?.localPath) {
       context.api.showErrorNotification('Failed to open mod archive', 'The mod archive could not be found.', { allowReport: false });
       return;
     }
